@@ -9,71 +9,61 @@
 </head>
 <body>
     <div class="container-fluid">
-        <form class="col-sm-12 col-md-4" onsubmit="return false;">
-            <div class="row mb-3">
-                <div class="col">
-                    <input type="number" class="form-control goCalc" placeholder="消費金額" id="price" min="1">
+        <form class="col-sm-12 col-md-6 col-lg-4" onsubmit="return false;">
+            <div class="row">
+                <label class="col-sm-12 col-md-6 col-form-label">消費金額</label>
+                <div class="col-sm-12 col-md-6">
+                    <input type="number" class="form-control text-end goCalc" id="price" min="1">
                 </div>
-                <div class="col">
+            </div>
+            <div class="row">
+                <label class="col-sm-3 col-form-label">基本回饋率</label>
+                <div class="col-sm-3">
                     <div class="input-group">
-                        <input type="number" class="form-control goCalc" placeholder="回饋率" id="rate" min="0" aria-label="回饋率" aria-describedby="basic-addon2" step="0.5" value="3.5">
-                        <span class="input-group-text" id="basic-addon2">%</span>
+                        <input type="number" class="form-control text-end goCalc" id="rateBase" min="0" step="0.5" value="3">
+                        <span class="input-group-text">%</span>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="row">
-                        <label for="" class="col-form-label col-sm-8">回饋</label>
-                        <div class="col-sm-4">
-                            <input type="number" class="form-control-plaintext" id="bonus" value="0" readonly>
-                        </div>
-                    </div>
+                <label class="col-sm-3 col-form-label">基本回饋</label>
+                <div class="col-sm-3">
+                    <input type="number" class="form-control-plaintext text-end" id="bonusBase" value="0" readonly>
                 </div>
             </div>
-            <div class="row mb-3">
-                <div class="col">
-                    <div class="row">
-                        <label for="" class="col-form-label col-sm-4">回饋規則</label>
-                        <div class="col-sm-8">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="bonusRule" id="bonusRule01" checked>
-                                <label class="form-check-label" for="bonusRule01">四捨五入</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="bonusRule" id="bonusRule02">
-                                <label class="form-check-label" for="bonusRule02">捨去</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="bonusRule" id="bonusRule03">
-                                <label class="form-check-label" for="bonusRule03">進位</label>
-                            </div>
-                        </div>
+            <div class="row">
+                <label class="col-sm-3 col-form-label">加碼回饋率</label>
+                <div class="col-sm-3">
+                    <div class="input-group">
+                        <input type="number" class="form-control text-end goCalc" id="rateAddon" min="0" step="0.5" value="0.5">
+                        <span class="input-group-text">%</span>
                     </div>
+                </div>
+                <label class="col-sm-3 col-form-label">加碼回饋</label>
+                <div class="col-sm-3">
+                    <input type="number" class="form-control-plaintext text-end" id="bonusAddon" value="0" readonly>
                 </div>
             </div>
-            <div class="row mb-3">
-                <div class="col">
-                    <div class="row">
-                        <label for="" class="col-form-label col-sm-8">建議消費金額</label>
-                        <div class="col-sm-4">
-                            <input type="number" class="form-control-plaintext" id="bestPrice" value="0" readonly>
-                        </div>
-                    </div>
+            <div class="row">
+                <label class="col-form-label col-sm-6">總回饋</label>
+                <div class="col-sm-6">
+                    <input type="number" class="form-control-plaintext text-end" id="bonus" value="0" readonly>
                 </div>
-                <div class="col">
-                    <div class="row">
-                        <label for="" class="col-form-label col-sm-8">建議折抵金額</label>
-                        <div class="col-sm-4">
-                            <input type="number" class="form-control-plaintext" id="bestDicount" value="0" readonly>
-                        </div>
-                    </div>
+            </div>
+            <div class="row">
+                <label for="" class="col-form-label col-sm-4">建議消費金額</label>
+                <div class="col-sm-8">
+                    <input type="number" class="form-control-plaintext text-end" id="bestPrice" value="0" readonly>
                 </div>
-                <div class="col">
-                    <div class="row">
-                        <label for="" class="col-form-label col-sm-8">建議回饋</label>
-                        <div class="col-sm-4">
-                            <input type="number" class="form-control-plaintext" id="bestBonus" value="0" readonly>
-                        </div>
-                    </div>
+            </div>
+            <div class="row">
+                <label for="" class="col-form-label col-sm-4">建議折抵金額</label>
+                <div class="col-sm-8">
+                    <input type="number" class="form-control-plaintext text-end" id="bestDicount" value="0" readonly>
+                </div>
+            </div>
+            <div class="row">
+                <label for="" class="col-form-label col-sm-4">建議回饋</label>
+                <div class="col-sm-8">
+                    <input type="number" class="form-control-plaintext text-end" id="bestBonus" value="0" readonly>
                 </div>
             </div>
             <div class="row">
@@ -85,24 +75,32 @@
     <script type="text/javascript">
         $(document).ready(function(){
             $("#btnCalc").on('click', function(){
-                var $this = $(this);
-                var $price = $('#price');
-                var $rate = $('#rate');
-                var price = parseInt($price.val());
-                var rate = parseFloat($rate.val());
-                if (isNaN(price) || price <= 0 || isNaN(rate) || rate < 0) {
-                    return;
-                }
+                var price = parseInt($('#price').val());
+                var rateBase = parseFloat($('#rateBase').val());
+                var rateAddon = parseFloat($('#rateAddon').val());
 
-                var bonus = Math.round(price * rate / 100 * Math.pow(10, 2)) / Math.pow(10, 2);
-                var bestBonus = Math.round(bonus) - 0.5;
-                var bestPrice = Math.ceil(bestBonus / rate * 100);
-                if (bestPrice < 0) { bestPrice =0; }
+                var vfyResult = [price, rateBase].reduce(function(carry, curr){
+                    return carry && !isNaN(curr) && curr > 0;
+                }, true);
+                if (!vfyResult) { return; }
+                if (isNaN(rateAddon) || rateAddon < 0) { rateAddon = 0; }
+
+                var bonusBase = calcBonus(price, rateBase);
+                var bonusAddon = calcBonus(price, rateAddon);
+                var bonus = Math.round(bonusBase, 0) + Math.round(bonusAddon, 0);
+                var bestBonus = Math.floor(bonusBase) - 0.5;
+                var bestPrice = Math.ceil(bestBonus / rateBase * 100);
+                if (bestPrice < 0) { bestPrice = 0; }
                 var bestDicount = price - bestPrice;
+                $('#bonusBase').val(bonusBase);
+                $('#bonusAddon').val(bonusAddon);
                 $('#bonus').val(bonus);
                 $('#bestDicount').val(bestDicount);
                 $('#bestPrice').val(bestPrice);
-                $('#bestBonus').val(Math.round(bestPrice * rate / 100 * Math.pow(10, 2)) / Math.pow(10, 2));
+                $('#bestBonus').val(
+                    Math.round(calcBonus(bestPrice, rateBase), 0) +
+                    Math.round(calcBonus(bestPrice, rateAddon), 0)
+                );
             });
             $('input[name="bonusRule"]').on('change', function(){
                 $("#btnCalc").click();
@@ -111,6 +109,10 @@
                 $("#btnCalc").click();
             });
         });
+
+        function calcBonus(price, rate) {
+            return Math.floor(price * rate / 100 * Math.pow(10, 2)) / Math.pow(10, 2);
+        }
     </script>
 </body>
 </html>
