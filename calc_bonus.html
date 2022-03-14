@@ -13,14 +13,14 @@
             <div class="row">
                 <label class="col-sm-12 col-md-6 col-form-label">消費金額</label>
                 <div class="col-sm-12 col-md-6">
-                    <input type="number" class="form-control text-end goCalc" pattern="\d*" id="price" min="1">
+                    <input type="number" class="form-control text-end goCalc" inputmode="numeric"  id="price" min="1">
                 </div>
             </div>
             <div class="row">
                 <label class="col-sm-3 col-form-label">基本回饋率</label>
                 <div class="col-sm-3">
                     <div class="input-group">
-                        <input type="number" class="form-control text-end goCalc" pattern="\d*" id="rateBase" min="0" step="0.5" value="3">
+                        <input type="number" class="form-control text-end goCalc" inputmode="numeric" id="rateBase" min="0" step="0.5" value="3">
                         <span class="input-group-text">%</span>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
                 <label class="col-sm-3 col-form-label">加碼回饋率</label>
                 <div class="col-sm-3">
                     <div class="input-group">
-                        <input type="number" class="form-control text-end goCalc" pattern="\d*" id="rateAddon" min="0" step="0.5" value="0.5">
+                        <input type="number" class="form-control text-end goCalc" inputmode="numeric" id="rateAddon" min="0" step="0.5" value="0.5">
                         <span class="input-group-text">%</span>
                     </div>
                 </div>
