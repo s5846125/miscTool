@@ -88,7 +88,7 @@
                 var bonusBase = calcBonus(price, rateBase);
                 var bonusAddon = calcBonus(price, rateAddon);
                 var bonus = Math.round(bonusBase, 0) + Math.round(bonusAddon, 0);
-                var bestBonus = Math.floor(bonusBase) - 0.5;
+                var bestBonus = Math.round(bonusBase, 0) - 0.5;
                 var bestPrice = Math.ceil(bestBonus / rateBase * 100);
                 if (bestPrice < 0) { bestPrice = 0; }
                 var bestDicount = price - bestPrice;
