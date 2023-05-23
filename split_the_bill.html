@@ -120,160 +120,161 @@
                 </div>
             </div>
         </div>
-    </body>
-    </html>
-    <script>
-        const ThisPage = {
-            newItemRow: function() {
-                return $('#smpItemRow').clone().removeClass('d-none').removeAttr('id');
-            }
-            ,
-            getItemRows: function() {
-                return $('#itemBox').children('.itemRow');
-            }
-            ,
-            calcAmount: function() {
-                var userPaid = [];
-                var debtorAmount = [];
-                ThisPage.getItemRows().each(function(idx, elem){
-                    const $row = $(elem);
-                    const $debtors = $row.find('input[data-item="debtor"]');
-                    const debtorCnt = $debtors.filter(':checked').length;
-                    var rowPaid = 0;
+    </div>
+</body>
+</html>
+<script>
+    const ThisPage = {
+        newItemRow: function() {
+            return $('#smpItemRow').clone().removeClass('d-none').removeAttr('id');
+        }
+        ,
+        getItemRows: function() {
+            return $('#itemBox').children('.itemRow');
+        }
+        ,
+        calcAmount: function() {
+            var userPaid = [];
+            var debtorAmount = [];
+            ThisPage.getItemRows().each(function(idx, elem){
+                const $row = $(elem);
+                const $debtors = $row.find('input[data-item="debtor"]');
+                const debtorCnt = $debtors.filter(':checked').length;
+                var rowPaid = 0;
 
-                    $row.find('input[data-amount="paid"]').each(function(idx, elem){
-                        const $amount = $(elem);
-                        const onePaid = parseInt($amount.val()) || 0;
-                        userPaid[idx] = ThisPage.addAmount(userPaid[idx], onePaid);
-                        rowPaid += onePaid;
-                    });
-
-                    $debtors.each(function(idx, elem){
-                        const $elem = $(elem);
-                        if (!elem.checked) {
-                            return;
-                        }
-                        debtorAmount[idx] = ThisPage.addAmount(debtorAmount[idx], rowPaid / debtorCnt);
-                    });
+                $row.find('input[data-amount="paid"]').each(function(idx, elem){
+                    const $amount = $(elem);
+                    const onePaid = parseInt($amount.val()) || 0;
+                    userPaid[idx] = ThisPage.addAmount(userPaid[idx], onePaid);
+                    rowPaid += onePaid;
                 });
 
-                $('div[data-item="payable"] .amount').each(function(idx, elem){
-                    debtorAmount[idx] = debtorAmount[idx] || 0;
+                $debtors.each(function(idx, elem){
                     const $elem = $(elem);
-                    var userPayble = debtorAmount[idx] - userPaid[idx];
-                    $elem.removeClass('text-success').html(function(){
-                        return ThisPage.presentAmount(userPayble);
-                    }).addClass(function(){
-                        return userPayble < 0 ? 'text-success' : '';
-                    });
+                    if (!elem.checked) {
+                        return;
+                    }
+                    debtorAmount[idx] = ThisPage.addAmount(debtorAmount[idx], rowPaid / debtorCnt);
                 });
-            }
-            ,
-            addAmount: function(obj, amount) {
-                obj = obj || 0;
-                return obj + (parseInt(amount) || 0);
-            }
-            ,
-            presentAmount: function(amount) {
-                return (Math.round(amount * 100) / 100 ) || 0;
-            }
-            ,
-            copyTnsCode: async function() {
-                await navigator.clipboard.writeText($('#txtTnsCodeOut').val);
-            }
-        };
-        const ThisRow = {
-            titleSelector: 'input[data-item="title"]'
-            ,
-            findTitle: function(Row) {
-                return Row.find(this.titleSelector).first();
-            }
-            ,
-            applyTitle: function(Row, value) {
-                return this.findTitle(Row).val(value);
-            }
-            ,
-            debtorSelector: 'input[data-item="debtor"]'
-            ,
-            listDebtors: function(Row) {
-                return Row.find(this.debtorSelector);
-            }
-        };
-        $(document).ready(function() {
-            $('#btnAddItem').on('click', function(ev) {
-                ev.preventDefault();
-                var $newRow = ThisPage.newItemRow().appendTo('#itemBox');
-                var $prevRow = $newRow.prev('.itemRow');
-                if ($prevRow.length > 0) {
-                    ThisRow.listDebtors($prevRow).each(function(idx, elem){
-                        ThisRow.listDebtors($newRow).eq(idx).prop('checked', elem.checked);
-                    });
-                } else {
-                    ThisRow.listDebtors($newRow).prop('checked', true);
-                }
-            }).click();
+            });
 
-            $('body').on('click', '.btnDelItemRow', function() {
-                // if (ThisPage.getItemRows().length <= 1) {
-                //     return;
-                // }
-                $(this).parents('.itemRow:first').remove();
-            });
-            $('#btnCalc').on('click', function() {
-                ThisPage.calcAmount();
-            });
-            $('#btnGetTnsCode').on('click', function(){
-                var data = {
-                    rows: [],
-                    version: '0.1'
-                };
-                ThisPage.getItemRows().each(function(idx, row){
-                    const $row = $(row);
-                    var rowData = {
-                        title: null,
-                        debtors: [],
-                    };
-                    rowData.title = ThisRow.findTitle($row).val();
-                    $row.find('input[data-item="debtor"]').each(function(idx, debtor){
-                        rowData.debtors.push({
-                            isDebtor: debtor.checked,
-                            amount: $row.find('input[data-amount="paid"]').eq(idx).val()
-                        });
-                    });
-                    data.rows.push(rowData);
+            $('div[data-item="payable"] .amount').each(function(idx, elem){
+                debtorAmount[idx] = debtorAmount[idx] || 0;
+                const $elem = $(elem);
+                var userPayble = debtorAmount[idx] - userPaid[idx];
+                $elem.removeClass('text-success').html(function(){
+                    return ThisPage.presentAmount(userPayble);
+                }).addClass(function(){
+                    return userPayble < 0 ? 'text-success' : '';
                 });
-                $('#txtTnsCodeOut').val(
-                    window.btoa(unescape(encodeURIComponent( JSON.stringify(data) )))
-                );
             });
-            $('#btnCopyTnsCode').popover().on('click', async function(){
-                try {
-                    await navigator.clipboard.writeText($('#txtTnsCodeOut').val());
-                    var $this = $(this);
-                    setTimeout(function(){$this.popover('hide');}, 800);
-                } catch (err) {
-                    console.error('Failed to copy: ', err);
-                }
-            });
-            $('#btnApplyTnsCode').on('click', function(ev){
-                ev.preventDefault();
-                $('#itemBox .btnDelItemRow').click();
-                var data = JSON.parse(decodeURIComponent(escape(window.atob( $('#txtTnsCodeIn').val() ))));
-                data.rows.forEach(function(rowData){
-                    $('#btnAddItem').click();
-                    var $row = ThisPage.getItemRows().last();
-                    ThisRow.applyTitle($row, rowData.title);
-                    ThisRow.listDebtors($row).each(function(idx, dbt){
-                        const $dbt = $(dbt);
-                        $dbt.prop('checked', rowData.debtors[idx].isDebtor);
-                        $dbt.siblings('input[data-amount="paid"]:first').val(rowData.debtors[idx].amount);
-                    });
+        }
+        ,
+        addAmount: function(obj, amount) {
+            obj = obj || 0;
+            return obj + (parseInt(amount) || 0);
+        }
+        ,
+        presentAmount: function(amount) {
+            return (Math.round(amount * 100) / 100 ) || 0;
+        }
+        ,
+        copyTnsCode: async function() {
+            await navigator.clipboard.writeText($('#txtTnsCodeOut').val);
+        }
+    };
+    const ThisRow = {
+        titleSelector: 'input[data-item="title"]'
+        ,
+        findTitle: function(Row) {
+            return Row.find(this.titleSelector).first();
+        }
+        ,
+        applyTitle: function(Row, value) {
+            return this.findTitle(Row).val(value);
+        }
+        ,
+        debtorSelector: 'input[data-item="debtor"]'
+        ,
+        listDebtors: function(Row) {
+            return Row.find(this.debtorSelector);
+        }
+    };
+    $(document).ready(function() {
+        $('#btnAddItem').on('click', function(ev) {
+            ev.preventDefault();
+            var $newRow = ThisPage.newItemRow().appendTo('#itemBox');
+            var $prevRow = $newRow.prev('.itemRow');
+            if ($prevRow.length > 0) {
+                ThisRow.listDebtors($prevRow).each(function(idx, elem){
+                    ThisRow.listDebtors($newRow).eq(idx).prop('checked', elem.checked);
                 });
-                $('#btnCalc').click();
-                $('#funcTab button[data-bs-target="#form-tab-pane"]:first').click();
-            });
-            $('#btnCleanTnsCode').on('click', function(){
-                $('#txtTnsCodeIn').val('');
-            });
+            } else {
+                ThisRow.listDebtors($newRow).prop('checked', true);
+            }
+        }).click();
+
+        $('body').on('click', '.btnDelItemRow', function() {
+            // if (ThisPage.getItemRows().length <= 1) {
+            //     return;
+            // }
+            $(this).parents('.itemRow:first').remove();
         });
-    </script>
+        $('#btnCalc').on('click', function() {
+            ThisPage.calcAmount();
+        });
+        $('#btnGetTnsCode').on('click', function(){
+            var data = {
+                rows: [],
+                version: '0.1'
+            };
+            ThisPage.getItemRows().each(function(idx, row){
+                const $row = $(row);
+                var rowData = {
+                    title: null,
+                    debtors: [],
+                };
+                rowData.title = ThisRow.findTitle($row).val();
+                $row.find('input[data-item="debtor"]').each(function(idx, debtor){
+                    rowData.debtors.push({
+                        isDebtor: debtor.checked,
+                        amount: $row.find('input[data-amount="paid"]').eq(idx).val()
+                    });
+                });
+                data.rows.push(rowData);
+            });
+            $('#txtTnsCodeOut').val(
+                window.btoa(unescape(encodeURIComponent( JSON.stringify(data) )))
+            );
+        });
+        $('#btnCopyTnsCode').popover().on('click', async function(){
+            try {
+                await navigator.clipboard.writeText($('#txtTnsCodeOut').val());
+                var $this = $(this);
+                setTimeout(function(){$this.popover('hide');}, 800);
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+            }
+        });
+        $('#btnApplyTnsCode').on('click', function(ev){
+            ev.preventDefault();
+            $('#itemBox .btnDelItemRow').click();
+            var data = JSON.parse(decodeURIComponent(escape(window.atob( $('#txtTnsCodeIn').val() ))));
+            data.rows.forEach(function(rowData){
+                $('#btnAddItem').click();
+                var $row = ThisPage.getItemRows().last();
+                ThisRow.applyTitle($row, rowData.title);
+                ThisRow.listDebtors($row).each(function(idx, dbt){
+                    const $dbt = $(dbt);
+                    $dbt.prop('checked', rowData.debtors[idx].isDebtor);
+                    $dbt.siblings('input[data-amount="paid"]:first').val(rowData.debtors[idx].amount);
+                });
+            });
+            $('#btnCalc').click();
+            $('#funcTab button[data-bs-target="#form-tab-pane"]:first').click();
+        });
+        $('#btnCleanTnsCode').on('click', function(){
+            $('#txtTnsCodeIn').val('');
+        });
+    });
+</script>
