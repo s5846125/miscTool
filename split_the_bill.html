@@ -5,44 +5,88 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Split the bill</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://code.jquery.com/jquery-3.7.0.slim.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <!-- title user list-->
-        <div class="row mb-3 mt-3">
-            <div class="col-md col-sm-12">人</div>
-            <div class="col">UiUi</div>
-            <div class="col">Vivian</div>
-            <div class="col">Pearl</div>
-        </div>
-        <div class="row mb-3" data-item="payable">
-            <div class="col-md col-sm-12">應付金額</div>
-            <div class="col amount">0</div>
-            <div class="col amount">0</div>
-            <div class="col amount">0</div>
-        </div>
-        <main class="flex-shrink-0">
-            <div class="container">
-                <hr class="bg-secondary border-2 border-top border-secondary">
-                <div id="itemBox"></div>
+        <ul class="nav nav-tabs" id="funcTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#form-tab-pane" type="button" role="tab" aria-selected="true">輸入</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#transfer-tab-pane" type="button" role="tab" aria-selected="false">交換碼</button>
+            </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="form-tab-pane" role="tabpanel" tabindex="0">
+                <!-- title user list-->
+                <div class="row mb-3 mt-3">
+                    <div class="col-md col-sm-12">人</div>
+                    <div class="col">UiUi</div>
+                    <div class="col">Vivian</div>
+                    <div class="col">Pearl</div>
+                </div>
+                <div class="row mb-3" data-item="payable">
+                    <div class="col-md col-sm-12">應付金額</div>
+                    <div class="col amount">0</div>
+                    <div class="col amount">0</div>
+                    <div class="col amount">0</div>
+                </div>
+                <main class="flex-shrink-0">
+                    <div class="container">
+                        <hr class="bg-secondary border-2 border-top border-secondary">
+                        <div id="itemBox"></div>
+                    </div>
+                </main>
+                <div class="container">
+                    <hr class="bg-secondary border-2 border-top border-secondary">
+                    <div class="row mb-3">
+                        <div class="col">
+                            <button type="button" class="btn btn-outline-secondary" id="btnAddItem">
+                                <i class="fa-solid fa-plus"></i> 新增項目
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" id="btnCalc">
+                                <i class="fa-solid fa-calculator"></i> Calc.
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </main>
-        <div class="container">
-            <hr class="bg-secondary border-2 border-top border-secondary">
-            <div class="row mb-3">
-                <div class="col">
-                    <button type="button" class="btn btn-outline-secondary" id="btnAddItem">
-                        <i class="fa-solid fa-plus"></i> 新增項目
-                    </button>
-                    <button type="button" class="btn btn-outline-primary" id="btnCalc">
-                        <i class="fa-solid fa-calculator"></i> Calc.
-                    </button>
+            <div class="tab-pane fade" id="transfer-tab-pane" role="tabpanel" tabindex="0">
+                <div class="row mt-3">
+                    <div class="col-auto">交換碼</div>
+                    <div class="col">
+                        <textarea class="form-control" id="txtTnsCodeOut" readonly></textarea>
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-outline-secondary" id="btnGetTnsCode">
+                                <i class="fa-solid fa-file-export"></i> 取得
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" id="btnCopyTnsCode" data-bs-container="body" data-bs-placement="right" data-bs-content="完成">
+                                <i class="fa-solid fa-copy"></i> 複製
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <hr class="bg-secondary border-2 border-top border-secondary">
+                <div class="row mt-3">
+                    <div class="col-auto">交換碼</div>
+                    <div class="col">
+                        <textarea class="form-control" placeholder="貼上交換碼" id="txtTnsCodeIn"></textarea>
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-outline-primary" id="btnApplyTnsCode">
+                                <i class="fa-solid fa-file-import"></i> 套用
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" id="btnCleanTnsCode">
+                                <i class="fa-solid fa-broom"></i> 清除
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
         <!-- sample: item row -->
         <div class="row mb-3 itemRow d-none" id="smpItemRow">
             <div class="col-md col-sm-12">
@@ -53,7 +97,7 @@
                         </button>
                     </div>
                     <div class="col">
-                        <input class="form-control form-control-sm" type="text" placeholder="項目">
+                        <input class="form-control form-control-sm" data-item="title" type="text" placeholder="項目">
                     </div>
                 </div>
             </div>
@@ -133,32 +177,103 @@
             presentAmount: function(amount) {
                 return (Math.round(amount * 100) / 100 ) || 0;
             }
+            ,
+            copyTnsCode: async function() {
+                await navigator.clipboard.writeText($('#txtTnsCodeOut').val);
+            }
+        };
+        const ThisRow = {
+            titleSelector: 'input[data-item="title"]'
+            ,
+            findTitle: function(Row) {
+                return Row.find(this.titleSelector).first();
+            }
+            ,
+            applyTitle: function(Row, value) {
+                return this.findTitle(Row).val(value);
+            }
+            ,
+            debtorSelector: 'input[data-item="debtor"]'
+            ,
+            listDebtors: function(Row) {
+                return Row.find(this.debtorSelector);
+            }
         };
         $(document).ready(function() {
             $('#btnAddItem').on('click', function(ev) {
                 ev.preventDefault();
                 var $newRow = ThisPage.newItemRow().appendTo('#itemBox');
                 var $prevRow = $newRow.prev('.itemRow');
-                const debtorSelector = 'input[data-item="debtor"]';
                 if ($prevRow.length > 0) {
-                    const $prevDebtors = $prevRow.find(debtorSelector);
-                    $prevRow.find(debtorSelector).each(function(idx, elem){
-                        $newRow.find(debtorSelector).eq(idx).prop('checked', elem.checked);
+                    ThisRow.listDebtors($prevRow).each(function(idx, elem){
+                        ThisRow.listDebtors($newRow).eq(idx).prop('checked', elem.checked);
                     });
                 } else {
-                    $newRow.find(debtorSelector).prop('checked', true);
+                    ThisRow.listDebtors($newRow).prop('checked', true);
                 }
-
             }).click();
 
             $('body').on('click', '.btnDelItemRow', function() {
-                if (ThisPage.getItemRows().length <= 1) {
-                    return;
-                }
+                // if (ThisPage.getItemRows().length <= 1) {
+                //     return;
+                // }
                 $(this).parents('.itemRow:first').remove();
             });
             $('#btnCalc').on('click', function() {
                 ThisPage.calcAmount();
+            });
+            $('#btnGetTnsCode').on('click', function(){
+                var data = {
+                    rows: [],
+                    version: '0.1'
+                };
+                ThisPage.getItemRows().each(function(idx, row){
+                    const $row = $(row);
+                    var rowData = {
+                        title: null,
+                        debtors: [],
+                    };
+                    rowData.title = ThisRow.findTitle($row).val();
+                    $row.find('input[data-item="debtor"]').each(function(idx, debtor){
+                        rowData.debtors.push({
+                            isDebtor: debtor.checked,
+                            amount: $row.find('input[data-amount="paid"]').eq(idx).val()
+                        });
+                    });
+                    data.rows.push(rowData);
+                });
+                $('#txtTnsCodeOut').val(
+                    window.btoa(unescape(encodeURIComponent( JSON.stringify(data) )))
+                );
+            });
+            $('#btnCopyTnsCode').popover().on('click', async function(){
+                try {
+                    await navigator.clipboard.writeText($('#txtTnsCodeOut').val());
+                    var $this = $(this);
+                    setTimeout(function(){$this.popover('hide');}, 800);
+                } catch (err) {
+                    console.error('Failed to copy: ', err);
+                }
+            });
+            $('#btnApplyTnsCode').on('click', function(ev){
+                ev.preventDefault();
+                $('#itemBox .btnDelItemRow').click();
+                var data = JSON.parse(decodeURIComponent(escape(window.atob( $('#txtTnsCodeIn').val() ))));
+                data.rows.forEach(function(rowData){
+                    $('#btnAddItem').click();
+                    var $row = ThisPage.getItemRows().last();
+                    ThisRow.applyTitle($row, rowData.title);
+                    ThisRow.listDebtors($row).each(function(idx, dbt){
+                        const $dbt = $(dbt);
+                        $dbt.prop('checked', rowData.debtors[idx].isDebtor);
+                        $dbt.siblings('input[data-amount="paid"]:first').val(rowData.debtors[idx].amount);
+                    });
+                });
+                $('#btnCalc').click();
+                $('#funcTab button[data-bs-target="#form-tab-pane"]:first').click();
+            });
+            $('#btnCleanTnsCode').on('click', function(){
+                $('#txtTnsCodeIn').val('');
             });
         });
     </script>
