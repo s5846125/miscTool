@@ -66,6 +66,7 @@
                             <button type="button" class="btn btn-outline-secondary" id="btnCopyTnsCode" data-bs-container="body" data-bs-placement="right" data-bs-content="完成">
                                 <i class="fa-solid fa-copy"></i> 複製
                             </button>
+                            <a class="btn btn-outline-secondary" id="btnShareTnsCode" href="javascript://">LINE</a>
                         </div>
                     </div>
                 </div>
@@ -246,6 +247,7 @@
             $('#txtTnsCodeOut').val(
                 window.btoa(unescape(encodeURIComponent( JSON.stringify(data) )))
             );
+            $('#btnShareTnsCode').prop('href', 'https://line.me/R/share?text='+ $('#txtTnsCodeOut').val());
         });
         $('#btnCopyTnsCode').popover().on('click', async function(){
             try {
