@@ -11,58 +11,58 @@
     <div class="container-fluid">
         <form class="col-sm-12 col-md-8 col-lg-6 col-xxl-4" onsubmit="return false;">
             <div class="row">
-                <label class="col-form-label col-sm-12 col-md-6">消費金額</label>
-                <div class="col-sm-12 col-md-6">
+                <label class="col-form-label col-4 col-sm-3">消費金額</label>
+                <div class="col-8 col-sm-3">
                     <input type="text" class="form-control text-end goCalc" id="price" min="1" pattern="^\d+$">
                 </div>
             </div>
             <div class="row">
-                <label class="col-form-label col-sm-3">基本回饋率</label>
-                <div class="col-sm-3">
+                <label class="col-form-label col-4 col-sm-3">基本回饋率</label>
+                <div class="col-8 col-sm-3">
                     <div class="input-group">
-                        <input type="text" class="form-control text-end goCalc" id="rateBase" min="0" step="0.1" pattern="^\d+\.\d*$" value="1.5">
+                        <input type="text" class="form-control text-end goCalc" id="rateBase" min="0" step="0.1" pattern="^\d+\(.\d+)?$" value="1.0">
                         <span class="input-group-text">%</span>
                     </div>
                 </div>
-                <label class="col-form-label col-sm-3">基本回饋</label>
-                <div class="col-sm-3">
+                <label class="col-form-label col-4 col-sm-3">基本回饋</label>
+                <div class="col-8 col-sm-3">
                     <input type="number" class="form-control-plaintext text-end" id="bonusBase" value="0" readonly>
                 </div>
             </div>
             <div class="row">
-                <label class="col-form-label col-sm-3">加碼回饋率</label>
-                <div class="col-sm-3">
+                <label class="col-form-label col-4 col-sm-3">加碼回饋率</label>
+                <div class="col-8 col-sm-3">
                     <div class="input-group">
-                        <input type="text" class="form-control text-end goCalc" id="rateAddon" min="0" step="0.1" pattern="^\d+\.\d*$" value="0.5">
+                        <input type="text" class="form-control text-end goCalc" id="rateAddon" min="0" step="0.1" pattern="^\d+\(.\d+)?$" value="0.7">
                         <span class="input-group-text">%</span>
                     </div>
                 </div>
-                <label class="col-form-label col-sm-3">加碼回饋</label>
-                <div class="col-sm-3">
+                <label class="col-form-label col-4 col-sm-3">加碼回饋</label>
+                <div class="col-8 col-sm-3">
                     <input type="number" class="form-control-plaintext text-end" id="bonusAddon" value="0" readonly>
                 </div>
             </div>
             <div class="row">
-                <label class="col-form-label col-sm-6 col-md-3">總回饋</label>
-                <div class="col-sm-6 col-md-3">
+                <label class="col-form-label col-4 col-md-3">總回饋</label>
+                <div class="col-8 col-md-3">
                     <input type="number" class="form-control-plaintext text-end" id="bonus" value="0" readonly>
                 </div>
             </div>
             <div class="row">
-                <label for="" class="col-form-label col-sm-4 col-md-3">建議消費金額</label>
-                <div class="col-sm-8 col-md-3">
+                <label for="" class="col-form-label col-4 col-md-3">建議消費金額</label>
+                <div class="col-8 col-md-3">
                     <input type="number" class="form-control-plaintext text-end" id="bestPrice" value="0" readonly>
                 </div>
             </div>
             <div class="row">
-                <label for="" class="col-form-label col-sm-4 col-md-3">建議折抵金額</label>
-                <div class="col-sm-8 col-md-3">
+                <label for="" class="col-form-label col-4 col-md-3">建議折抵金額</label>
+                <div class="col-8 col-md-3">
                     <input type="number" class="form-control-plaintext text-end" id="bestDicount" value="0" readonly>
                 </div>
             </div>
             <div class="row">
-                <label for="" class="col-form-label col-sm-4 col-md-3">建議回饋</label>
-                <div class="col-sm-8 col-md-3">
+                <label for="" class="col-form-label col-4 col-md-3">建議回饋</label>
+                <div class="col-8 col-md-3">
                     <input type="number" class="form-control-plaintext text-end" id="bestBonus" value="0" readonly>
                 </div>
             </div>
