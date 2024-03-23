@@ -11,16 +11,19 @@
     <div class="container-fluid">
         <form class="col-sm-12 col-md-8 col-lg-6 col-xxl-4" onsubmit="return false;">
             <div class="row">
-                <label class="col-form-label col-4 col-sm-3">消費金額</label>
-                <div class="col-8 col-sm-3">
-                    <input type="text" class="form-control text-end goCalc" id="price" min="1" pattern="^\d+$">
+                <label class="col-form-label col-12 col-sm-3">消費金額</label>
+                <div class="col-12 col-sm-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control text-end goCalc" id="price" min="1" pattern="^\d+$">
+                        <button class="btn btn-outline-secondary" id="btnClsPrice">reset</button>
+                    </div>
                 </div>
             </div>
             <div class="row">
-                <label class="col-form-label col-4 col-sm-3">基本回饋率</label>
-                <div class="col-8 col-sm-3">
+                <label class="col-form-label col-sm-3">基本回饋率</label>
+                <div class="col-sm-3">
                     <div class="input-group">
-                        <input type="text" class="form-control text-end goCalc" id="rateBase" min="0" step="0.1" pattern="^\d+(\.\d+)?$" value="1.0">
+                        <input type="text" class="form-control text-end goCalc" id="rateBase" min="0" step="0.1" pattern="^\d+(\.\d)?$" value="0">
                         <span class="input-group-text">%</span>
                     </div>
                 </div>
@@ -30,16 +33,26 @@
                 </div>
             </div>
             <div class="row">
-                <label class="col-form-label col-4 col-sm-3">加碼回饋率</label>
-                <div class="col-8 col-sm-3">
+                <label class="col-form-label col-sm-3">加碼回饋率</label>
+                <div class="col-sm-3">
                     <div class="input-group">
-                        <input type="text" class="form-control text-end goCalc" id="rateAddon" min="0" step="0.1" pattern="^\d+(\.\d+)?$" value="0.7">
+                        <input type="text" class="form-control text-end goCalc" id="rateAddon" min="0" step="0.1" pattern="^\d+(\.\d)?$" value="0">
                         <span class="input-group-text">%</span>
                     </div>
                 </div>
                 <label class="col-form-label col-4 col-sm-3">加碼回饋</label>
                 <div class="col-8 col-sm-3">
                     <input type="number" class="form-control-plaintext text-end" id="bonusAddon" value="0" readonly>
+                </div>
+            </div>
+            <div class="row">
+                <div class="btn-group col-sm-6">
+                <button class="btn btn-outline-secondary col-3 col-sm-6" data-rateTick="0.1">+0.1</button>
+                <button class="btn btn-outline-secondary col-3 col-sm-6" data-rateTick="0.5">+0.5</button>
+                <button class="btn btn-outline-secondary col-3 col-sm-6" data-rateTick="-0.5">-0.5</button>
+                <button class="btn btn-outline-secondary col-3 col-sm-6" data-rateTick="-0.1">-0.1</button>
+                <button class="btn btn-outline-secondary col-6 col-sm-6" data-rateTick="0">clean</button>
+                <button class="btn btn-outline-secondary col-6 col-sm-6" data-rateAct="swap">swap</button>
                 </div>
             </div>
             <div class="row">
@@ -73,45 +86,103 @@
     </div>
 
     <script type="text/javascript">
+        const ThisPage = {
+            lastRate: null
+            ,
+            add: function (num1, num2) {
+                const nums = [].slice.apply(arguments).filter(function(cu) {
+                    return !isNaN(Number(cu));
+                });
+                const pow = Math.pow(10, ThisPage.powLen(nums));
+                return nums.reduce(function(ca, cu) {
+                    return ca + Number(cu) * pow;
+                }, 0) / pow;
+            }
+            ,
+            roundPrice: function (num) {
+                return Math.round(num, 0);
+            }
+            ,
+            powLen: function (nums) {
+                return nums.filter(function(cu) {
+                    return !isNaN(Number(cu));
+                }).reduce(function(ca, cu) {
+                    var parts = cu.toString().split('.');
+                    return (parts[1] && parts[1].length > ca) ? parts[1].length : ca;
+                }, 0);
+            }
+        };
         $(document).ready(function(){
+            $('#price').focus();
             $("#btnCalc").on('click', function(){
-                var price = parseInt($('#price').val());
+                const price = parseInt($('#price').val());
                 var rateBase = parseFloat($('#rateBase').val());
                 var rateAddon = parseFloat($('#rateAddon').val());
 
-                var vfyResult = [price, rateBase].reduce(function(carry, curr){
-                    return carry && !isNaN(curr) && curr > 0;
+                var vfyResult = [price, rateBase, rateAddon].reduce(function(ca, cu){
+                    return ca && !isNaN(cu) && cu >= 0;
                 }, true);
                 if (!vfyResult) { return; }
+                if (isNaN(rateBase) || rateBase < 0) { rateBase = 0; }
                 if (isNaN(rateAddon) || rateAddon < 0) { rateAddon = 0; }
 
-                var bonusBase = calcBonus(price, rateBase);
-                var bonusAddon = calcBonus(price, rateAddon);
-                var bonus = Math.round(bonusBase, 0) + Math.round(bonusAddon, 0);
-                var bestBonus = Math.round(bonusBase, 0) - 0.5;
-                var bestPrice = Math.ceil(bestBonus / rateBase * 100);
-                if (bestPrice < 0) { bestPrice = 0; }
-                var bestDicount = price - bestPrice;
+                const bonusBase = calcBonus(price, rateBase);
+                const bonusAddon = calcBonus(price, rateAddon);
+                const bonus = ThisPage.roundPrice(bonusBase) + ThisPage.roundPrice(bonusAddon);
+                const bestBonus = [bonusBase, bonusAddon].reduce(function (ca, cu) {
+                    const cuBonus = ThisPage.roundPrice(cu) - 0.5;
+                    return cuBonus >= 0 && cuBonus >= ca ? cuBonus : ca;
+                }, 0);
+                const bestPrice = [rateBase, rateAddon].reduce(function (ca, cu) {
+                    let p = bestBonus <= 0 || cu == 0 ? ca : Math.ceil(bestBonus / cu * 100);
+                    return p < ca ? p : ca;
+                }, price);
                 $('#bonusBase').val(bonusBase);
                 $('#bonusAddon').val(bonusAddon);
                 $('#bonus').val(bonus);
-                $('#bestDicount').val(bestDicount);
+                $('#bestDicount').val(price - bestPrice);
                 $('#bestPrice').val(bestPrice);
                 $('#bestBonus').val(
-                    Math.round(calcBonus(bestPrice, rateBase), 0) +
-                    Math.round(calcBonus(bestPrice, rateAddon), 0)
+                    ThisPage.roundPrice(calcBonus(bestPrice, rateBase)) +
+                    ThisPage.roundPrice(calcBonus(bestPrice, rateAddon))
                 );
-            });
-            $('input[name="bonusRule"]').on('change', function(){
-                $("#btnCalc").click();
             });
             $('.goCalc').on('keyup', function(){
                 $("#btnCalc").click();
             });
+            $('#rateBase, #rateAddon').focus(function() {
+                ThisPage.lastRate = this;
+            });
+            $('button[data-rateTick]').on('click', function(){
+                const $tick = $(this);
+                const rateTick = $tick.attr('data-rateTick');
+                $(ThisPage.lastRate).val(function(){
+                    return rateTick == 0 ?
+                        0 :
+                        ThisPage.add($(this).val(), rateTick);
+                }).keyup();
+            });
+            $('button[data-rateAct]').on('click', function(){
+                const $this = $(this);
+                switch ($this.attr('data-rateAct')) {
+                    case 'swap':
+                        const $r1 = $('#rateBase');
+                        const $r2 = $('#rateAddon');
+                        var tmp = $r1.val();
+                        $r1.val($r2.val());
+                        $r2.val(tmp).keyup();
+                        return;
+                }
+            });
+            $('#btnClsPrice').on('click', function() {
+                $('#price').val('').keyup().focus();
+            });
+            $('input[readonly]').prop('tabindex', '-1');
         });
 
         function calcBonus(price, rate) {
-            return Math.floor(price * rate / 100 * Math.pow(10, 2)) / Math.pow(10, 2);
+            const pow = Math.pow(10, 2);
+            return Math.floor(price * rate / 100 * pow) / pow;
         }
     </script>
 </body>
