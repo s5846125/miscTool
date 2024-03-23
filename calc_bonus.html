@@ -12,7 +12,7 @@
         <form class="col-sm-12 col-md-8 col-lg-6 col-xxl-4" onsubmit="return false;">
             <div class="row">
                 <label class="col-form-label col-12 col-sm-3">消費金額</label>
-                <div class="col-12 col-sm-3">
+                <div class="col-12 col-sm-9">
                     <div class="input-group">
                         <input type="text" class="form-control text-end goCalc" id="price" min="1" pattern="^\d+$">
                         <button class="btn btn-outline-secondary" id="btnClsPrice">reset</button>
@@ -115,9 +115,9 @@
         $(document).ready(function(){
             $('#price').focus();
             $("#btnCalc").on('click', function(){
-                const price = parseInt($('#price').val());
-                var rateBase = parseFloat($('#rateBase').val());
-                var rateAddon = parseFloat($('#rateAddon').val());
+                const price = parseInt($('#price').val()) || 0;
+                var rateBase = parseFloat($('#rateBase').val()) || 0;
+                var rateAddon = parseFloat($('#rateAddon').val()) || 0;
 
                 var vfyResult = [price, rateBase, rateAddon].reduce(function(ca, cu){
                     return ca && !isNaN(cu) && cu >= 0;
